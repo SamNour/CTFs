@@ -1,0 +1,13 @@
+@app.route('/image')
+def _serve_image():
+    requested_image = request.args.get("filename")
+    if not requested_image:
+        return "No image specified", 404
+    image_path = os.path.join(os.getcwd(), requested_image)
+    # finding the safe directory to restrict path traversal out of it
+    safe_dir = os.getcwd()
+    if os.path.commonprefix((os.path.realpath(image_path), safe_dir)) != safe_dir:
+        return "Un-authorized access", 401
+    if not os.path.isfile(image_path):
+        return "Image not found", 404
+    return send_file(image_path)
