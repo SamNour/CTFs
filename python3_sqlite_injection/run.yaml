@@ -1,0 +1,23 @@
+
+SEQ:
+  - pyflakes:
+      inFile: sqlite_injection.py
+      outputFile: pyflakes_raw.txt
+
+  - pyflakes_norm:
+      inputFile:   pyflakes_raw.txt
+      outputFile:  res_pyflakes.json
+      patternFile: backend/patterns.yaml
+
+  - cmd:
+      shell:
+        - python3 -m unittest -v test_.py > stdout3.txt 2> stderr3.txt
+
+  - run_binary:
+      execFile: test_.py
+
+  - ai:
+      inputFiles:
+        - res_pyflakes.json
+        - test_.json
+
